@@ -9,7 +9,7 @@ Simply run the command:
 ```console
 foo@bar$ sh dl-applefonts.sh
 ```
-Apple's fonts will be installed to _~/.local/share/fonts_ by default. The `-o`
+Apple's fonts will be installed to _$XDG_DATA_HOME/fonts_ by default. The `-o`
 option allows specifying a custom directory.
 
 This program has been tested on OpenBSD, but is expected to run on other

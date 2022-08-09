@@ -15,7 +15,7 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 readonly progname="${0##*/}"
-outdir="$HOME/.local/share/fonts"
+outdir="${XDG_DATA_HOME:-"$HOME/.local/share"}/fonts"
 
 # This script downloads Apple's system fonts from Apple's website and installs
 # them.
@@ -60,9 +60,7 @@ err()
 
 usage()
 {
-	cat <<- EOF
-		usage:	$progname [-h] [-o outdir]
-	EOF
+	printf 'usage:\t%s [-h] [-o outdir]\n' "$progname"
 }
 
 # err_handler: remove temporary files on error.
