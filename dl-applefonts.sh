@@ -40,7 +40,7 @@ main()
 		err "extraneous non-option arguments: '$*'"
 	fi
 
-	trap err_handler EXIT
+	trap err_handler EXIT INT TERM
 	infile="$(mktemp)"
 	outfile="$(mktemp)"
 
@@ -67,7 +67,8 @@ usage()
 # XXX: figure out a clean way to also remove the partial installed files
 err_handler()
 {
-	rm "$infile" "$outfile"
+	rm -f "$infile" "$outfile"
+	exit $?
 }
 
 # getfont: download and install Apple font
