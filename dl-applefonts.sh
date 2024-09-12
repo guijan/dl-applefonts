@@ -33,11 +33,11 @@ main()
 		esac
 	done
 	shift $((OPTIND - 1))
-	if [ "$rval" ]; then
-		exit "$rval"
-	fi
 	if [ "$*" ]; then
 		err "extraneous non-option arguments: '$*'"
+	fi
+	if [ "$rval" ]; then
+		exit "$rval"
 	fi
 
 	trap err_handler EXIT INT TERM
