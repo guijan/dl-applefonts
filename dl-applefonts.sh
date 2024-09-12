@@ -123,18 +123,7 @@ getfont()
 }
 
 # download(): download $2 to $1
-if command -v ftp >/dev/null && [ "$(uname -s)" != "FreeBSD" ]; then
-	download()
-	{
-		# FreeBSD's ftp(1) doesn't support HTTPS.
-		ftp -o "$1" "$2"
-	}
-elif command -v fetch >/dev/null; then
-	download()
-	{
-		fetch -ao "$1" "$2"
-	}
-elif command -v curl >/dev/null; then
+if command -v curl >/dev/null; then
 	download()
 	{
 		curl -o "$1" "$2"
@@ -143,6 +132,17 @@ elif command -v wget >/dev/null; then
 	download()
 	{
 		wget -O "$1" "$2"
+	}
+elif command -v fetch >/dev/null; then
+	download()
+	{
+		fetch -ao "$1" "$2"
+	}
+elif command -v ftp >/dev/null && [ "$(uname -s)" != "FreeBSD" ]; then
+	download()
+	{
+		# A lot of ftp commands out there don't support HTTPS, so leave it last.
+		ftp -o "$1" "$2"
 	}
 else
 	err "downloader dependency missing, install any of: curl, wget, fetch, ftp"
