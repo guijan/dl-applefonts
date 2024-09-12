@@ -46,11 +46,11 @@ main()
 	outfile="$(mktemp)"
 
 	# Order by size to speed up debugging.
-	getfont 'SF Arabic'
-	getfont 'SF Mono'
-	getfont 'NY'
-	getfont 'SF Compact'
-	getfont 'SF Pro'
+	for font in 'SF Arabic' 'SF Mono' 'NY' 'SF Compact' 'SF Pro'; do
+		if ! getfont "$font"; then
+			exit 1
+		fi
+	done
 }
 
 # err: print an error message and error exit
@@ -88,7 +88,9 @@ getfont()
 	# font but with the space if any replaced by a dash.
 	dl="$(printf '%s' "$font" | sed 's/ /-/')"
 	url="https://devimages-cdn.apple.com/design/resources/download/$dl.dmg"
-	download "$infile" "$url"
+	if ! download "$infile" "$url"; then
+		return 1
+	fi
 
 	# The .dmg file is full of random stuff we don't care about. What we do
 	# care about is the .pkg file in it which contains the payload.
@@ -102,7 +104,9 @@ getfont()
 	# The text processing here transforms the font name into the .pkg name.
 	filt="$(printf '%s' "$font" | sed 's/ //')"
 	filt="${filt}Fonts" 
-	7z -so e "$infile" "$filt/$font Fonts.pkg" > "$outfile"
+	if ! 7z -so e "$infile" "$filt/$font Fonts.pkg" > "$outfile"; then
+		return 1
+	fi
 	swap
 
 	# p7zip 16.02 has incomplete xar support, it can only extract the payload, 
@@ -112,13 +116,17 @@ getfont()
 	# In 16.02, the payload is named 'Payload~'
 	# In 24.07, the payload is named 'SFArabicFonts.pkg/Payload' (or equivalent 
 	# for other fonts).
-	7z -so e "$infile" "${filt}.pkg/Payload" > "$outfile"
+	if ! 7z -so e "$infile" "${filt}.pkg/Payload" > "$outfile"; then
+		return 1
+	fi
 	outsize="$(wc -c "$outfile" | awk '{print $1}')"
 	if [ "$outsize" -ne 0 ]; then
 		# New p7zip.
 		swap
 	fi
-	7z -so e "$infile" > "$outfile"
+	if ! 7z -so e "$infile" > "$outfile"; then
+		return 1
+	fi
 	swap
 
 	# 7z creates the outdir if necessary.
