@@ -118,7 +118,7 @@ getfont()
 	else
 		ext=otf
 	fi
-	7z -o"$outdir/AppleFonts/$font" e "$infile" "./Library/Fonts/*.$ext" \
+	7z -y -o"$outdir/AppleFonts/$font" e "$infile" "./Library/Fonts/*.$ext" \
 		>/dev/null
 }
 
