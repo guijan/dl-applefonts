@@ -40,7 +40,7 @@ main()
 		exit "$rval"
 	fi
 
-	trap err_handler EXIT INT TERM
+	trap cleanup EXIT INT TERM
 	infile="$(mktemp)"
 	outfile="$(mktemp)"
 
@@ -63,12 +63,13 @@ usage()
 	printf 'usage:\t%s [-h] [-o outdir]\n' "$progname"
 }
 
-# err_handler: remove temporary files on error.
+# cleanup: clean up before exiting.
 # XXX: figure out a clean way to also remove the partial installed files
-err_handler()
+cleanup()
 {
+	rval="$?"
 	rm -f "$infile" "$outfile"
-	exit $?
+	exit "$rval"
 }
 
 # getfont: download and install Apple font
