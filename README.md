@@ -1,9 +1,10 @@
 # dl-applefonts: download and install Apple fonts
 ## Usage
-This program depends on [p7zip](https://github.com/jinfeihan57/p7zip), a POSIX
-shell, and a downloader program which can be any of BSD ftp (recommended),
-[curl](https://github.com/curl/curl), and
-[wget](https://www.gnu.org/software/wget/).
+This program depends on [p7zip](https://github.com/jinfeihan57/p7zip), 
+a POSIX shell, a [mktemp](https://man.openbsd.org/mktemp.1) implementation, 
+and a downloader program which can be any of BSD ftp (recommended),
+[curl](https://github.com/curl/curl),
+or [wget](https://www.gnu.org/software/wget/).
 
 Simply run the command:
 ```console
