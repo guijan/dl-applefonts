@@ -1,6 +1,6 @@
 #!/bin/sh -e
 
-# Copyright (c) 2022 Guilherme Janczak <guilherme.janczak@yandex.com>
+# Copyright (c) 2022, 2024 Guilherme Janczak <guilherme.janczak@yandex.com>
 #
 # Permission to use, copy, modify, and distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
@@ -120,10 +120,16 @@ getfont()
 }
 
 # download(): download $2 to $1
-if command -v ftp >/dev/null; then
+if command -v ftp >/dev/null && [ "$(uname -s)" != "FreeBSD" ]; then
 	download()
 	{
+		# FreeBSD's ftp(1) doesn't support HTTPS.
 		ftp -o "$1" "$2"
+	}
+elif command -v fetch >/dev/null; then
+	download()
+	{
+		fetch -ao "$1" "$2"
 	}
 elif command -v curl >/dev/null; then
 	download()
@@ -136,7 +142,7 @@ elif command -v wget >/dev/null; then
 		wget -O "$1" "$2"
 	}
 else
-	err "downloader dependency missing, install any of: ftp, curl, wget"
+	err "downloader dependency missing, install any of: curl, wget, fetch, ftp"
 fi
 
 # swap(): swap global variables $infile and $outfile
