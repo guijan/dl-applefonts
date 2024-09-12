@@ -101,12 +101,24 @@ getfont()
 	#
 	# The text processing here transforms the font name into the .pkg name.
 	filt="$(printf '%s' "$font" | sed 's/ //')"
-	filt="${filt}Fonts/$font Fonts.pkg"
-	7z -so e "$infile" "$filt" > "$outfile"
+	filt="${filt}Fonts" 
+	7z -so e "$infile" "$filt/$font Fonts.pkg" > "$outfile"
 	swap
 
-	# Don't need to specify a filter here but I do anyway for strictness.
-	7z -so e "$infile" 'Payload~' > "$outfile"
+	# p7zip 16.02 has incomplete xar support, it can only extract the payload, 
+	# and it extracts the payload and gzip decompresses it.
+	# p7zip 24.07 has complete xar support, it extracts everything in the xar, 
+	# and it doesn't gzip decompress the payload.
+	# In 16.02, the payload is named 'Payload~'
+	# In 24.07, the payload is named 'SFArabicFonts.pkg/Payload' (or equivalent 
+	# for other fonts).
+	7z -so e "$infile" "${filt}.pkg/Payload" > "$outfile"
+	outsize="$(wc -c "$outfile" | awk '{print $1}')"
+	if [ "$outsize" -ne 0 ]; then
+		# New p7zip.
+		swap
+	fi
+	7z -so e "$infile" > "$outfile"
 	swap
 
 	# 7z creates the outdir if necessary.
