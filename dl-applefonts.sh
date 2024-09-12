@@ -25,8 +25,9 @@ main()
 		err "p7zip dependency missing"
 	fi
 
-	while getopts ho: o; do
+	while getopts Dho: o; do
 		case $o in
+			D)	set -vx;;
 			h)	usage; rval=0;;
 			o)	outdir="$OPTARG";;
 			?)	exit 1;;
@@ -44,11 +45,12 @@ main()
 	infile="$(mktemp)"
 	outfile="$(mktemp)"
 
-	getfont 'SF Pro'
-	getfont 'SF Compact'
-	getfont 'SF Mono'
+	# Order by size to speed up debugging.
 	getfont 'SF Arabic'
+	getfont 'SF Mono'
 	getfont 'NY'
+	getfont 'SF Compact'
+	getfont 'SF Pro'
 }
 
 # err: print an error message and error exit
@@ -60,7 +62,7 @@ err()
 
 usage()
 {
-	printf 'usage:\t%s [-h] [-o outdir]\n' "$progname"
+	printf 'usage:\t%s [-Dh] [-o outdir]\n' "$progname"
 }
 
 # cleanup: clean up before exiting.
